@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../styles/colors'
 import { PanGestureHandler } from 'react-native-gesture-handler'
 import { Coordinate, Direction, GestureEventType } from '../types/types'
@@ -19,6 +19,39 @@ export default function Game(): JSX.Element {
     const [food, setFood] = useState<Coordinate>(FOOD_INTIAL_POSITION)
     const [isGameOver, setIsGameOver] = useState<boolean>(false)
     const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (!isGameOver) {
+            const intervalId = setInterval(() => {
+                !isGamePaused && moveSnake();
+            }, MOVE_INTERVAL)
+            return () => clearInterval(intervalId)
+        }
+    }, [snake, isGameOver, isGamePaused])
+
+    const moveSnake = () => {
+        const snakeHead = snake[0];
+        const newHead = { ...snakeHead } // making a copy of snake Head
+
+        //gameover
+        switch (direction) {
+            case Direction.Up:
+                newHead.y -= 1
+                break;
+            case Direction.Down:
+                newHead.y += 1;
+                break;
+            case Direction.Left:
+                newHead.x -= 1
+                break;
+            case Direction.Right:
+                newHead.x += 1
+                break;
+            default:
+                break;
+        }
+        setSnake([newHead, ...snake.slice(0, -1)])
+    }
 
     const handleGesture = (event: GestureEventType) => {
         const { translationX, translationY } = event.nativeEvent

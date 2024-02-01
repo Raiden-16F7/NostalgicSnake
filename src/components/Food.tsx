@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderRadius: 7,
-        position: 'absolute'
+        position: 'absolute',
+        fontSize: 35,
+        color: 'aqua'
     }
 })
